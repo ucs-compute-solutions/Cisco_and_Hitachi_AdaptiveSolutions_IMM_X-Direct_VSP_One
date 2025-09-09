@@ -1,0 +1,49 @@
+---
+# ##############################################################################
+#
+#   Cisco Intersight Configuration Parameters
+#
+# ##############################################################################
+
+# This file defines Intersight global parameters.
+
+# !!! Sensitive Data should be encrypted using Ansible Vault. 
+# These variables will have a name that starts with 'vault_'
+
+# Enter Intersight API Key ID and the location of the SecretKey file 
+intersight_api_key_id: "{{ vault_intersight_api_key_id }}"
+intersight_api_private_key: "{{ vault_intersight_api_private_key }}"
+api_key_id: "{{ vault_intersight_api_key_id }}"
+api_private_key: "{{ vault_intersight_api_private_key }}"
+# intersight_validate_certs: "false"
+# 
+# Intersight Resource Group Name. Please make sure it already exists.
+resource_group_name: "IAC_RG"
+resource_group_description: "IAC Resource Group"
+# 
+# 
+# Intersight Organization Name. Please make sure it already exists.
+organization_name: "IAC_ORG"
+organization_description: "IAC Organization"
+org_name: "{{ organization_name }}"
+# 
+
+ntp_servers:
+  - ip_address: "10.1.168.101"
+  - ip_address: "192.168.168.254"
+
+dns_servers:
+  - ip_address: "192.168.160.53"
+  - ip_address: "192.168.160.54"
+
+# SNMP
+configure_snmpv3: false
+
+# This is the list of all the VLANs that will be defined on Nexus, Storage, and UCS.
+# VLAN Names are adjustable and can be modified in here
+#
+#native_vlan_name: 'Native-Vlan' # Native VLAN
+#native_vlan_id: 2
+
+#oob_vlan_name: 'OOB-MGMT'
+#oob_vlan_id: 19

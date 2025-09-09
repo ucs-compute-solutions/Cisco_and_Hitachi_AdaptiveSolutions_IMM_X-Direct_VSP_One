@@ -1,0 +1,101 @@
+---
+################################################################################
+# Example : NVMe/TCP Playbook -  User must complete "Hitachi VSP One Block Storage for Red Hat Ansible" installation.
+#                             -  User must updated variables based on their requirements and environment.
+################################################################################
+- name: Logical Device Module
+  hosts: localhost
+  gather_facts: false
+
+  vars_files:
+#    - ../ansible_vault_vars/ansible_vault_storage_var.yml
+    - /root/.ansible/collections/ansible_collections/hitachivantara/vspone_block/playbooks/ansible_vault_vars/ansible_vault_storage_var.yml
+
+  vars:
+    # Common connection info for all tasks
+    connection_info:
+      address: "{{ storage_address }}"
+      username: "{{ vault_storage_username }}"
+      password: "{{ vault_storage_secret }}"
+
+  tasks:
+
+    ############################################################################
+    # Task 1 : Create a DDP Pool
+    ############################################################################
+    - name: Create a DDP Pool
+      hitachivantara.vspone_block.vsp.hv_ddp_pool:
+        connection_info: "{{ connection_info }}"
+        state: present
+        spec:
+          pool_name: "UCS_Application_Pool_1"                                   
+          is_encryption_enabled: false
+          threshold_warning: 70
+          threshold_depletion: 80
+          drives:
+            - drive_type_code: "SNM5C-R3R8NC"                                   
+              data_drive_count: 9
+
+      register: result
+
+    - name: Debug result
+      ansible.builtin.debug:
+        var: result
+
+    ###########################################################################
+    # Task 2 : Create ldev with capacity saving and data_reduction_share
+    ###########################################################################
+    - name: Create ldev with capacity saving and data_reduction_share
+      hitachivantara.vspone_block.vsp.hv_ldev:
+        connection_info: "{{ connection_info }}"
+        storage_system_info:
+          serial: "{{ storage_serial }}"
+        state: "present"
+        spec:
+          ldev_id: 250                                                          
+          pool_id: 1                                                            
+          size: "10GB"
+          capacity_saving: "compression_deduplication"
+          data_reduction_share: true
+          name: Application_VMFS_250                                            
+      register: result
+
+    - name: Debug the result variable
+      ansible.builtin.debug:
+        var: result
+
+    ############################################################################
+    # Task 3 : Create an NVM Subsystem with a specific ID
+    ############################################################################
+    - name: Create an NVM Subsystem
+      hitachivantara.vspone_block.vsp.hv_nvm_subsystems:
+        connection_info: "{{ connection_info }}"
+        storage_system_info:
+          serial: "{{ storage_serial }}"
+        spec:
+          name: UCS_NVMe_TCP_VMware_Ansible_200
+          id: 200
+          ports: ["CL1-D", "CL2-D", "CL3-D", "CL4-D"]
+          host_mode: "VMWARE_EX"
+          enable_namespace_security: true
+          host_nqns:
+            - nqn: "nqn.2014-08.local.adaptive-solutions:nvme:esxi-21"		 
+              nickname: "host 21"
+            - nqn: "nqn.2014-08.local.adaptive-solutions:nvme:esxi-22"	         
+              nickname: "host 22"
+            - nqn: "nqn.2014-08.local.adaptive-solutions:nvme:esxi-23"	         
+              nickname: "host 23"
+          namespaces:
+            - ldev_id: 250
+              nickname: "LDEV250 Namespace"
+              paths:
+                - "nqn.2014-08.local.adaptive-solutions:nvme:esxi-21"
+                - "nqn.2014-08.local.adaptive-solutions:nvme:esxi-22"
+                - "nqn.2014-08.local.adaptive-solutions:nvme:esxi-23"
+      register: result
+
+    - name: Debug the result variable
+      ansible.builtin.debug:
+        var: result
+
+  

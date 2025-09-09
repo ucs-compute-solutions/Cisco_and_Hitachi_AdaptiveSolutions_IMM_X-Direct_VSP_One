@@ -1,0 +1,18 @@
+---
+# Create various pools. The pools being created are:
+# - IP Pools for Mgmt
+# - WWxx Pools for FC 
+# - UUID pools
+# - MAC address Pools
+#
+- name: "Create Various Pools"
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - group_vars/secrets.yml
+    - group_vars/ucs.yml
+    - group_vars/all.yml
+
+  # Create Various Pool
+  roles:
+    - role: create_pools

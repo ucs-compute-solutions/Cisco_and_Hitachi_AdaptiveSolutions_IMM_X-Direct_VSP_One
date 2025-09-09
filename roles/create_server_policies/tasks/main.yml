@@ -1,0 +1,99 @@
+---
+
+- name: "Create IMM Server Policies"
+  vars:
+    api_info: &api_info_org_moid
+      api_private_key: "{{ intersight_api_private_key }}"
+      api_key_id: "{{ intersight_api_key_id }}"
+      api_uri: "{{ api_uri | default(omit) }}"
+      validate_certs: "{{ validate_certs | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+  cisco.intersight.intersight_rest_api:
+    <<: *api_info_org_moid
+    resource_path: /organization/Organizations
+    query_params:
+      $filter: "Name eq '{{ org_name }}'"
+  register: intersight_org
+  delegate_to: localhost
+  tags: always
+  run_once: true
+
+- name: Collect info on existing Boot Order, LAN and SAN Connectivity Policies
+  ansible.builtin.include_tasks: gather_policy_info.yml
+
+- name: Collect information about various pools
+  ansible.builtin.include_tasks: gather_pool_info.yml
+#
+#- name: Create Chassis Thermal Policy
+#  ansible.builtin.include_tasks: create_chassis_thermal_policy.yml
+#
+#- name: Create Chassis Power Policy
+#  ansible.builtin.include_tasks: create_chassis_power_policy.yml
+#
+- name: Create Bios Policy
+  ansible.builtin.include_tasks: create_bios_policies.yml
+
+- name: Create IMC Access Policy
+  ansible.builtin.include_tasks: create_ib_imc_policy.yml
+  when: (( ib_mgmt == 'true' ))
+
+- name: Create IMC Access Policy
+  ansible.builtin.include_tasks: create_oob_imc_policy.yml
+  when: (( oob_mgmt == 'true' ))
+
+- name: Create KVM Policy
+  ansible.builtin.include_tasks: create_kvm_policy.yml
+
+- name: Create vMedia Policy
+  ansible.builtin.include_tasks: create_vmedia_policy.yml
+
+- name: Create Boot Order Policy
+  ansible.builtin.include_tasks: create_boot_order_policy.yml
+  when: ((configure_iscsi == 'true') and (iscsi_boot_order_policy_details.api_response.Moid is not defined)) or ((configure_fc == 'true') and (fc_boot_order_policy_details.api_response.Moid is not defined)) or ((configure_local == 'true') and (local_boot_order_policy_details.api_response.Moid is not defined))
+
+- name: Create IPMI over LAN Policy to enable IPMI over LAN
+  ansible.builtin.include_tasks: create_ipmi_policy.yml
+
+- name: Create Ethernet QoS Policy
+  ansible.builtin.include_tasks: create_ethernet_qos_policy.yml
+
+- name: Create Ethernet Network Control Policy
+  ansible.builtin.include_tasks: create_ethernet_network_control_policy.yml
+
+- name: Create VMware and High Traffic Ethernet Adapter Policy
+  ansible.builtin.include_tasks: create_ethernet_adapter_policies.yml
+
+- name: Create Ethernet Network Group Policy - vNIC VLANs for Management/vMotion/VM Traffic
+  ansible.builtin.include_tasks: create_ethernet_network_group_policy.yml
+
+- name: Configure FC LAN Connectivity Policy if FC
+  ansible.builtin.include_tasks: create_fc_lan_connectivity_policy.yml
+  when: (configure_fc == 'true') and (fc_lan_connectivity_policy_details.api_response.Moid is not defined)
+
+- name: Configure NVMe_TCP LAN Connectivity Policy if NVMe_TCP
+  ansible.builtin.include_tasks: create_nvme_tcp_lan_connectivity_policy.yml
+  when: (configure_nvme_tcp == 'true') and (nvme_tcp_lan_connectivity_policy_details.api_response.Moid is not defined)
+
+- name: Configure FC Network Policy
+  ansible.builtin.include_tasks: create_fc_network_policy.yml
+  when: configure_fc == 'true'
+
+- name: Fibre Channel Qos Policy
+  ansible.builtin.include_tasks: create_fc_qos_policy.yml
+  when: configure_fc == 'true'
+
+- name: Fibre Channel Adapter Policies
+  ansible.builtin.include_tasks: create_fc_adapter_policy.yml
+  when: configure_fc == 'true'
+
+- name: Fibre Channel NVMe Adapter Policies
+  ansible.builtin.include_tasks: create_fc_nvme_initiator_adapter_policy.yml
+  when: configure_fc_nvme == 'true'
+
+- name: SAN connectivity Policy
+  ansible.builtin.include_tasks: create_san_connectivity_policy.yml
+  when: (configure_fc == 'true') and (san_connectivity_policy_details.api_response.Moid is not defined)
+
+- name: Configure Storage Policy if Using Local Boot
+  ansible.builtin.include_tasks: create_storage_policy.yml
+  when: (configure_local_storage == 'true') and (storage_policy_details.api_response.Moid is not defined)

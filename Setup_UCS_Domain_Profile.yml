@@ -1,0 +1,11 @@
+---
+# Creating UCS Domain policies and profile specific to Converged Infrastrucure stack. 
+- name: "Configure UCS Domain Policies and Profiles"
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - group_vars/secrets.yml
+    - group_vars/ucs.yml
+
+  roles:
+    - role: create_domain_profile

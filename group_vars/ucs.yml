@@ -1,0 +1,418 @@
+---
+# ##############################################################################
+#
+#   Cisco IMM Configuration Parameters for UCS servers
+#
+# #############################################################################
+
+# Prefix added to the pool/policy/profile configuration to quickly identify items created by Ansible
+prefix: IAC
+#
+# UCS Domain Name
+ucs_domain_name: "IAC-X-Direct"
+#
+# FI Device Model - Set to UCS-FI-6536, UCS-FI-6454, UCS-FI-64108, or UCSX-S9108-100G
+fi_device_model: "UCSX-S9108-100G"
+#
+# FC Breakout Ports on UCS-FI-6536 or UCSX-S9108-100G
+# On UCS-FI-6536, these ports count backwards from 36-33.
+# On UCSX-S9108-100G, these ports count up from 1-2.
+# Below comment out any ports that are not used.
+# If not using FC breakout ports, set configure_fc_breakout to false.
+configure_fc_breakout: 'false'
+fc_breakout_speed: "32" # Set to 16 or 32
+fc_breakout_ports:
+#  - 36
+#  - 35
+#  - 34
+#  - 33
+#  - 1
+#  - 2
+#
+# FC Ports on UCS-FI-6454 or UCS-FI-64108 - These ports count upwards in groups of 4
+# from port 1 except for 15 and 16
+# If not using UCS-FI-6454 or UCS-FI-64108, set configure_fc_6400_ports to false.
+configure_fc_6400_ports: 'false'
+fc_6400_first_port: 1
+fc_6400_end_port: 4 # Should be 4, 8, 12, or 16
+
+# Ethernet Breakout Ports on UCS-FI-6536, UCS-FI-6454, or UCS-FI-64108
+# If not configuring FI Ethernet Breakout Ports, set configure_ethernet_breakouts to false.configure_ethernet_breakouts: 'false'
+configure_ethernet_breakouts: 'false'
+eth_breakout_speed: "25" # Set to 10 or 25
+fi_eth_breakout_ports:
+#  - 17
+#  - 18
+#  - 19
+#  - 20
+#
+# Configure Server Ports
+# Chassis and C-Series Full Server Ports
+# Note that UCSX-S9108-100G does not currently have server ports.
+configure_full_server_ports: 'false'
+full_server_ports:
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+# Chassis and C-Series Breakout Server Ports
+# Make sure that any ports used here are set as breakouts above.
+# Note that UCSX-S9108-100G does not currently have server ports.
+configure_breakout_server_ports: 'false'
+breakout_server_ports:
+  - [17, 1] # [port, subport]
+  - [17, 2]
+  - [17, 3]
+  - [17, 4]
+#  - [18, 1]
+#  - [18, 3]
+
+# Network Uplink Port-Channel with Full Ports
+# This task sets up either 2 or 4 uplink ports in the port-channel.
+configure_network_uplink_full_ports: 'true'
+num_ports_in_pc: 2   # Set to 2 or 4
+uplink_port_channel_id_full: 11
+uplink_port_channel_port_1: 7
+uplink_port_channel_port_2: 8
+#uplink_port_channel_port_3: 33
+#uplink_port_channel_port_4: 34
+
+# Network Uplink Port-Channel with Breakout Ports
+# This task sets up a port-channel with either 4 or 8 broken-out uplink ports in the port-channel
+# For any port that is broken out, all 4 sub-ports are used.
+configure_network_uplink_breakout_ports: 'false'
+num_breakout_ports_in_pc: 4 # Set to either 4 or 8
+uplink_port_channel_id_breakout: 119
+uplink_port_channel_breakout_port_1: 19
+uplink_port_channel_breakout_port_2: 20
+
+# FC Breakout Uplink Port-Channel on UCS-FI-6536 or UCSX-S9108-100G
+# This task sets up a port-channel with with either 4 or 8 sub-ports in the port-channel (all 4 sub-ports are always used).
+# If a different number of ports is needed, the port policies can be adjusted in the Intersight Web interface if necessary.
+# If not using breakout FC port-channel, set configure_fc_breakout_pc to false.
+configure_6536_fc_breakout_pc: 'false'
+num_6536_breakout_ports_in_pc: 4
+fc_6536_breakout_pc_id: 135
+fc_6536_breakout_pc_root_port_1: 35
+fc_6536_breakout_pc_root_port_2: 36
+
+# FC Uplink Port-Channel on UCS-FI-6454 or UCS-FI-64108 - This sets up a port-channel
+# with either 2 or 4 ports.
+# If not using UCS-FI-6454 or UCS-FI-64108, set configure_fc_6400_pc to false.
+configure_fc_6400_pc: 'false'
+fc_6400_fc_speed: 32 # Set to 16 or 32
+fc_6400_num_ports_in_pc: 2 # Set to either 2 or 4.
+fc_6400_pc_id: 11
+fc_6400_pc_port_1: 1
+fc_6400_pc_port_2: 2
+fc_6400_pc_port_3: 3
+fc_6400_pc_port_4: 4
+
+# FCoE Uplink Port-Channel - This port-channel is assumed to be a 2-port port-channel
+# from each FI. If more ports are needed, they can be added to the port policies from Intersight.
+configure_fcoe_uplink_pc: 'false'
+fcoe_uplink_pc_id: 127
+fcoe_uplink_pc_port_1: 27
+fcoe_uplink_pc_port_2: 28
+
+#
+#
+###############################################################################
+#
+# UCS Domain Policies
+#
+###############################################################################
+# Multicast Policy
+name_of_multicast_policy: "{{ prefix }}-MCAST"
+description_of_multicast_policy: "VLAN Multicast Policy"
+#
+# FI VLAN Policy
+name_of_fi_vlan_policy: "{{ ucs_domain_name }}-VLAN-Policy"
+description_of_fi_vlan_policy: "FI VLAN Policy"
+# This is the list of all the VLANs that will be defined on Nexus, Storage, and UCS.
+# VLAN Names are adjustable and can be modified in here
+#
+native_vlan_name: 'Native-Vlan' # Native VLAN
+native_vlan_id: 2
+#
+oob_vlan_name: 'OOB-MGMT'
+oob_vlan_id: 19
+#
+uplink_vlans:
+  - ["NVMe-TCP-A", "41"] # prefix, vlan
+  - ["NVMe-TCP-B", "42"]
+  - ["IB-Mgmt", "119"]
+  - ["vMotion", "1000"]
+  - ["VM-Traffic", "1100"]
+  - ["VM-Traffic-A", "1101"]
+  - ["VM-Traffic-B", "1102"]
+
+# Link Control UDLD Policy
+name_of_udld_policy: "{{ prefix }}-Link-Control-UDLD"
+description_of_udld_policy: "UDLD Policy"
+
+# FI A Port Policy
+name_of_fi_a_port_policy: "{{ ucs_domain_name }}-A-Port-Policy"
+description_of_fi_a_port_policy: "FI A Port Policy"
+
+# FI B Port Policy
+name_of_fi_b_port_policy: "{{ ucs_domain_name }}-B-Port-Policy"
+description_of_fi_b_port_policy: "FI B Port Policy"
+
+# NTP Policy
+ucs_timezone: "America/New_York" # Standard Linux Timezone
+name_of_ntp_policy: "{{ ucs_domain_name }}-NTP-Policy"
+description_of_ntp_policy: "UCS Domain NTP Policy"
+
+# Network Connectivity Policy
+name_of_netconn_policy: "{{ ucs_domain_name }}-Network-Connectivity"
+description_of_netconn_policy: "Network Connectivity Policy - DNS"
+
+# System QoS Policy
+name_of_system_qos_policy: "{{ prefix }}-System-QoS-Policy"
+description_of_system_qos_policy: "System QoS Policy"
+
+# UCS Domain Profile
+name_of_ucs_domain_profile: "{{ ucs_domain_name }}-Domain-Profile"
+description_of_ucs_domain_profile: "UCS Domain Profile"
+
+# Commenting out the following three variables will skip the iSCSI and/or FC configurations
+# Configure iSCSI policies and profiles only when the value is set to true
+#
+configure_iscsi: "false"
+
+# Configure Fibre Channel policies and profiles only when the value is set to true
+configure_fc: "false"
+
+# Configure Fibre Channel NVMe vHBAs; only works when the configure_fc is set to true
+configure_fc_nvme: "false"
+
+# Configure NVMe/TCP vNICs; only works when the configure_nvme_tcp is set to true
+configure_nvme_tcp: "true"
+
+# Configure Storage Policy if Using Local Boot
+configure_local_storage: "true"
+
+# ##############################################################################
+#
+#   Server Configuration Parameters
+#
+# #############################################################################
+
+# Server CPU Type - set to Intel or AMD
+server_cpu_type: "AMD"
+#server_cpu_type: "Intel"
+
+# VIC Type - set to 4G for 4th Gen VICs or 5G for 5th Gen VICs 
+# Also add 4G or 5G to Server Profile Template Name
+vic_type: "5G"
+
+# ##############################################################################
+#
+#   Parameters for Server Pools
+#
+# ##############################################################################
+
+# Chassis Configuration - UUID Pool
+name_of_uuid_pool: "{{ prefix }}-UUID_Pool"
+uuid_prefix: "AA240000-0000-0001"
+uuid_size: 64
+uuid_from: "AA24-000000000001"
+
+# IP Address Pool for In-Band (IB) Management Access 
+#
+ib_mgmt: "true"
+#ib_mgmt: 'false'
+name_of_ip_pool_for_ib_management_access: "{{ prefix }}-IB-MGMT-IP_Pool"
+ip_pool_start_for_ib_management_access: 10.1.168.181
+size_of_ip_pool_for_ib_management_access: 16
+gateway_ib_mgmt: 10.1.168.254
+netmask_ib_mgmt: 255.255.255.0
+primary_dns_ib_mgmt: 10.1.168.101
+secondary_dns_ib_mgmt: 110.1.168.102
+
+# IP Address Pool for Out-of-Band (OOB) Management Access 
+#
+#oob_mgmt: 'true'
+oob_mgmt: "false"
+name_of_ip_pool_for_oob_management_access: "{{ prefix }}-OOB-MGMT-IP_Pool"
+ip_pool_start_for_oob_management_access: 192.168.168.101
+size_of_ip_pool_for_oob_management_access: 24
+gateway_oob_mgmt: 192.168.168.254
+netmask_oob_mgmt: 255.255.255.0
+primary_dns_oob_mgmt: 192.168.160.53
+secondary_dns_oob_mgmt: 192.168.160.54
+
+
+# Separate MAC Address Pools for Fabric-A and Fabric-B
+#
+# For FI-A
+name_of_mac_pool_on_fi_a: "{{ prefix }}-Fabric-A-MAC_Pool"
+mac_pool_start_on_fi_a: "00:25:B5:24:0A:00"
+size_of_mac_pool_on_fi_a: 256
+
+# For FI-B
+name_of_mac_pool_on_fi_b: "{{ prefix}}-Fabric-B-MAC_Pool"
+mac_pool_start_on_fi_b: "00:25:B5:24:0B:00"
+size_of_mac_pool_on_fi_b: 256
+
+# Pools for Fibre Channel storage access - only needed when configure_fc == "true"
+#
+# WWNN Pool
+#name_of_wwnn_pool: "{{ prefix }}-WWNN_Pool"
+#wwnn_pool_start: "20:00:00:25:B5:21:00:00"
+#wwnn_pool_size: 256
+#
+# WWPN Pool
+#
+# For FI-A
+#name_of_wwpn_pool_san_a: "{{ prefix }}-Fabric-A-WWPN_Pool"
+#wwpn_pool_start_on_san_a: "20:00:00:25:B5:21:0A:00"
+#wwpn_pool_size_on_san_a: 256
+#
+# For FI-B
+#name_of_wwpn_pool_san_b: "{{ prefix }}-Fabric-B-WWPN_Pool"
+#wwpn_pool_start_on_san_b: "20:00:00:25:B5:21:0B:00"
+#wwpn_pool_size_on_san_b: 256
+
+# ##############################################################################
+#
+#    Server Policies
+#
+# ##############################################################################
+
+# Chassis Policies
+name_of_chassis_thermal_policy: "{{ prefix }}-Chassis-Thermal_Policy"
+name_of_chassis_power_policy: "{{ prefix }}-Chassis-Power_Policy"
+
+# BIOS Policy 
+name_of_m8_bios_policy: "{{ prefix }}-{{ server_cpu_type }}-BIOS_M8_Policy"
+name_of_m7_bios_policy: "{{ prefix }}-{{ server_cpu_type }}-BIOS_M7_Policy"
+
+# IMC Access Policy - Configures the KVM to be accessed In-Band
+# The in-band vlan must be enabled on the trunk between Nexus 9K and UCS FI
+name_of_imc_access_policy: "{{ prefix }}-IMC-Access_Policy"
+ib_vlan_for_cimc_access: 119
+
+# KVM Access Policy - Enables (true) or disables (false) Tunneled KVM Server Access
+# Ensure the Intersight Account allows Tunneled KVM> To enable Tunneled KVM for 
+# account, go to Settings > Security and Privacy and enable Tunneled KVM settings
+name_of_kvm_policy: "{{ prefix }}-vKVM_Policy"
+enable_tunneled_kvm: "true"
+
+# Virtual Media Policy - enables mounting ISO files using KVM 
+name_of_vmedia_policy: "{{ prefix }}-vMedia_Policy"
+
+# IPMI over LAN Policy 
+name_of_ipmi_policy: "{{ prefix }}-IPMI-LAN_Policy"
+
+# Storage Policy for Local Boot
+name_of_storage_policy: "{{ prefix }}-Storage_Policy"
+# Description of Storage Policy for Local Boot
+description_of_storage_policy: "Local Boot"
+# Drive Group Name
+name_of_drive_group: "{{ prefix }}-Drive_Group"
+# RAID Level 
+drive_group_raid: "Raid1"
+# Drive Slots for Drive Group
+drive_slots: "1-2"
+# Virtual Drive Name
+virtual_drive_name: "{{ prefix }}-VDrive_Name"
+
+# Ethernet QoS Policy to set MTU 9000 and QoS Best Effort;
+# QoS values can be updated in roles/create_server_policies/defaults/main.yml
+name_of_ethernet_qos_policy: "{{ prefix }}-Ethernet-QoS_Policy"
+
+# Ethernet Network Control Policy to enable CDP and LLDP
+name_of_ethernet_network_control_policy: "{{ prefix }}-Ethernet-Network-Control_Policy"
+
+# Default Ethernet Adapter Policy for VMware
+# Various values can be updated under roles/create_server_policies/defaults/main.yml
+name_of_ethernet_adapter_vmware_policy: "{{ prefix }}-Ethernet-Adapter-Default-VMware_Policy"
+
+# Ethernet High Traffic Adapter Policy
+# Various values can be updated under roles/create_server_policies/defaults/main.yml
+name_of_ethernet_adapter_hightrf_policy: "{{ prefix }}-Ethernet-Adapter-HighTrf-VMware_Policy"
+
+# Ethernet 16 RX Queues VIC Adapter Policy
+# Various values can be updated under roles/create_server_policies/defaults/main.yml
+name_of_ethernet_adapter_16rxq_policy: "{{ prefix }}-Ethernet-Adapter-16RXQs-{{ vic_type }}_Policy"
+
+# Ethernet Network Group Policy - VLAN details of vNICs assigned to virtual switches for Management
+name_of_network_group_policy_for_management: "{{ prefix }}-Ethernet-Network-Group-Mgmt_Policy"
+native_vlan_for_mgmt_vnic: 119
+allowed_vlans_for_mgmt_vnic: "119"
+
+# Ethernet Network Group Policy - VLANs details of vNIC assigned to vDS for vMotion, and VM-Traffic VLANs
+name_of_network_group_policy_for_vds: "{{ prefix }}-Ethernet-Network-Group-VM-Network_Policy"
+native_vlan_for_vds_vnic: 2
+allowed_vlans_for_vds_vnic: "19,119,1000,1100-1102"
+
+# Ethernet Network Group Policy - VLANs details of vNIC assigned to IPStorage
+name_of_network_group_policy_for_ipstorage_a: "{{ prefix }}-Network-Group-IPStorage_A_Policy"
+#name_of_network_group_policy_for_ipstorage_a: "{{ prefix }}-Ethernet-Network-Group-IPStorage_A_Policy"
+description_of_network_group_policy_for_ipstorage_a: "NVMe/TCP and optionally iSCSI VLANs for A Fabric"
+native_vlan_for_ipstorage_a_vnic: 2
+allowed_vlans_for_ipstorage_a_vnic: "41"
+
+
+name_of_network_group_policy_for_ipstorage_b: "{{ prefix }}-Network-Group-IPStorage_B_Policy"
+description_of_network_group_policy_for_ipstorage_b: "NVMe/TCP and optionally iSCSI VLANs for B Fabric"
+native_vlan_for_ipstorage_b_vnic: 2
+allowed_vlans_for_ipstorage_b_vnic: "42"
+
+
+# LAN Connectivity Policy
+# 6 interfaces for all hosts. 
+
+# - Note -
+# In the current version of Ansible Playbooks, we require unique vNIC names when 
+# configuring LAN connectivity policies
+
+# 00-vSwitch0/fc-A: For Management mapped to FI-A
+# 01-vSwitch0/fc-B: For Management mapped to FI-B
+# 02-vDS0/fc-A: For vMotion and traffic mapped to FI-A
+# 03-vDS0/fc-B: For vMotion and traffic mapped to FI-B
+
+name_of_nvme_tcp_lan_connectivity_policy: "{{ prefix }}-LAN-Connectivity-NVMe-TCP-{{ vic_type }}_Policy"
+description_of_nvme_tcp_lan_connectivity_policy: "NVMe over TCP optionally including iSCSI"
+
+# These vNIC names must be unique within use for the environment.  If these are specified within an existing LAN Connectivity Policy, this LAN Connectivity Policy creation will fail.  This behavior should be corrected at some point.
+
+name_of_fc_vnic_1: "0-vSwitch0-A"
+name_of_fc_vnic_2: "1-vSwitch0-B"
+name_of_fc_vnic_3: "2-vDS0-A"
+name_of_fc_vnic_4: "3-vDS0-B"
+
+name_of_nvme_tcp_vnic_1: "0-vSwitch0-A"
+name_of_nvme_tcp_vnic_2: "1-vSwitch0-B"
+name_of_nvme_tcp_vnic_3: "2-vDS0-A"
+name_of_nvme_tcp_vnic_4: "3-vDS0-B"
+name_of_nvme_tcp_vnic_5: "2-IPStorage-A"
+name_of_nvme_tcp_vnic_6: "3-IPStorage-B"
+
+# Boot mode for server. Either put Uefi or Legacy
+# UEFI secure boot true or false
+boot_mode: "Uefi"
+enable_uefi_secureboot: "true"
+
+# Boot Order Policy for Fibre Channel Boot
+#fc_boot_order_policy_name: "{{ prefix }}-FC-Boot-Order-{{ vic_type }}_Policy"
+
+# Boot Order Policy for Local Channel Boot
+local_boot_order_policy_name: "{{ prefix }}-Local-Boot-Order_Policy"
+local_boot_order_policy_description: "Local Boot"
+local_boot_device_name: "MStorBootVd"
+local_boot_slot: "MRAID"
+configure_local: 'true'
+
+# Boot Order Policy
+
+
+
+# ------------------------ Server Profile Template ----------------------------------
+
+name_of_nvme_tcp_SPT: "{{ prefix }}-{{ server_cpu_type }}-{{ vic_type }}-NVMe-TCP_Template"
+description_of_nvme_tcp_SPT: "NVMe over TCP with Local Boot Server Profile Template"
