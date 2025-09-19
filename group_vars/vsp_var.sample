@@ -15,12 +15,8 @@ llowing link:
 07-2x/mk-23vsp1b003/overview-of-the-rest-api
 
 storage_serial: 8####8  
-storage_address: 192.168.168.23  
+storage_address: 192.168.168.23
 vault_storage_username: m##############e
 vault_storage_secret: r#######e
 
-secondary_storage_serial: <your_secondary_storage_serial_number>
-secondary_storage_address: <your_storage_ip_address_or_fqdn> # Example: storage1.company.com or sds1.co
-mpany.com or 10.10.10.10
-vault_secondary_storage_username: <your_storage_user_name>
-vault_secondary_storage_secret: <your_storage_password>
+
