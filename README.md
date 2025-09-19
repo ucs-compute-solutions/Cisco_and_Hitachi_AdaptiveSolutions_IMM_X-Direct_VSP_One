@@ -95,9 +95,8 @@ The Linux Ansible control server will be used to execute the Adaptive Solutions 
 
 
 ### Hitachi Setup Inventory and Variables 
-1. Adjustable variables are primarily in the base group_vars directory. 
-   - In the repo, these are contained within the ansible_vault_storage_var_yml file.
-2.	All required variables will be set in the playbook.
+1. Adjustable variables are primarily in the base group_vars directory.
+2. All other required variables will be set in the playbook.
 
 
 ### Hitachi Playbook Execution Sequence
