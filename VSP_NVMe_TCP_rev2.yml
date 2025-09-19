@@ -8,7 +8,6 @@
   gather_facts: false
 
   vars_files:
-#    - ../ansible_vault_vars/ansible_vault_storage_var.yml
     - /root/.ansible/collections/ansible_collections/hitachivantara/vspone_block/playbooks/ansible_vault_vars/ansible_vault_storage_var.yml
 
   vars:
@@ -97,5 +96,6 @@
     - name: Debug the result variable
       ansible.builtin.debug:
         var: result
+
 
   
