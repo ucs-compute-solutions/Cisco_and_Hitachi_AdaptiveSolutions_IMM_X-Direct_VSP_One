@@ -93,7 +93,6 @@ With the prerequisite steps complete, the file VSP_NVMe_TCP_rev2.yml from the re
 
 The Linux Ansible control server will be used to execute the Adaptive Solutions NVMe/TCP playbooks for storage. Post installation of the Hitachi VSP One Block Storage Modules for Red Hat Ansible 3.5, all Hitachi playbooks are available at the following location: $HOME/.ansible/collections/ansible_collections/hitachivantara/vspone_block/playbooks
 
-(additional pull in upon review)
 
 ### Hitachi Setup Inventory and Variables 
 1. Adjustable variables are primarily in the base group_vars directory. 
@@ -104,9 +103,9 @@ The Linux Ansible control server will be used to execute the Adaptive Solutions 
 ### Hitachi Playbook Execution Sequence
 
 NOTE: If ansible_vault_storage_var_yml has been encrypted with ansible-vault, include --ask-vault-pass in the invocation.
-1.	In the playbooks directory, update the VSP_NVMe_TCP_rev1.yml file with the required variables.
+1.	In the playbooks directory, update the VSP_NVMe_TCP_rev2.yml file with the required variables.
 2.	Invoke the playbook with the following command:
-ansible-playbook VSP_NVMe_TCP_rev1.yml
+ansible-playbook VSP_NVMe_TCP_rev2.yml
 
 ### Hitachi Post Configuration Playbook status
 
