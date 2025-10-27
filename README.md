@@ -82,7 +82,7 @@ The following steps must be completed prior to the execution of the Hitachi Stor
 The steps that will need to have been completed include:
 
 - [VSP One Block 24 Installation](https://docs.hitachivantara.com/r/en-us/virtual-storage-platform-one-block/a3-04-0x/mk-23vsp1b008/installing-your-storage-system)
-- [Configuration of VSP One Block NVMe/TCP ports](Link to the Deployment Gd)
+- [Configuration of VSP One Block NVMe/TCP ports](https://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/UCS_CVDs/ucs_hitachi_adaptive_solutions_nvme_tcp.html#NVMeTCPPortsonHitachiVSPOneBlock)
 - [Installation of Hitachi VSP One Block Storage Modules for Red Hat Ansible 3.5](https://docs.hitachivantara.com/v/u/en-us/adapters-and-drivers/3.5.x/mk-92adptr149)
 
 Invocation of the playbooks through Ansible can occur from a number of differing platforms, a Linux system is used as an example within the CVD. This will require the cisco.intersight ansible-galaxy collection described here: [https://galaxy.ansible.com/ui/repo/published/cisco/intersight/](https://galaxy.ansible.com/ui/repo/published/cisco/intersight/)
