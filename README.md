@@ -122,7 +122,7 @@ Execution of the playbooks will result in the creation on the VSP One Block of t
 The following steps must be completed prior to the execution of the Hitachi ICO custom workflows for configuring Hitachi VSP NVMe-oF storage.
 
 - [VSP One Block 24 Installation](https://docs.hitachivantara.com/r/en-us/virtual-storage-platform-one-block/a3-04-0x/mk-23vsp1b008/installing-your-storage-system)
-- [Configuration of VSP One Block NVMe/TCP ports](Link to the Deployment Gd)
+- [Configuration of VSP One Block NVMe/TCP ports](https://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/UCS_CVDs/ucs_hitachi_adaptive_solutions_nvme_tcp.html#NVMeTCPPortsonHitachiVSPOneBlock)
 - [Cisco  ICO onboarding of Hitachi VSP OneBlock]( https://www.hitachivantara.com/en-us/pdf/architecture-guide/integrating-virtual-storage-platform-with-cisco-intersight.pdf)
 
 To deploy these custom workflows, end users must download the respective Github workflows contained in “Export_Workflow_Hitachi_VSP_NVMe_OF_Sequence.json”  to their Cisco Intersight account and import the via the ICO Import Workflow function. For information on how to import a workflow into a Cisco Intersight instance,  refer to the following [Documentation](https://docs.hitachivantara.com/v/u/en-us/application-optimized-solutions/mk-sl-280) 
