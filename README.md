@@ -22,7 +22,7 @@ The execution of these Ansible playbooks are described in the following two sect
 
 ## Intersight Managed Mode
 
-Some prior steps will need to be performed within IMM that are not covered in the Ansible playbooks that will include basic setup with the onboarding of the UCS Fabric Interconnects and the creation and association of the UCS Domain Profile are detailed here: (https://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/UCS_CVDs/ucs_hitachi_adaptive_solutions_nvme_tcp.html#CiscoIntersightManagedModeConfiguration) 
+Some prior steps will need to be performed within IMM that are not covered in the Ansible playbooks that will include basic setup with the onboarding of the UCS Fabric Interconnects and the creation and association of the UCS Domain Profile are detailed here: https://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/UCS_CVDs/ucs_hitachi_adaptive_solutions_nvme_tcp.html#CiscoIntersightManagedModeConfiguration 
 
 The steps that will need to be followed will be:
 - [Intersight Setup](https://www.cisco.com/c/en/us/td/docs/unified_computing/ucs/UCS_CVDs/hitachi_adaptive_vmware_vsp.html#Intersight_Setup) 
