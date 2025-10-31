@@ -11,7 +11,7 @@ This repository will also include ICO custom  Ansible exported workflows for:
 The Adaptive Solutions partnership between Cisco and Hitachi produces converged infrastructure based validated reference architectures.  These architectures feature Cisco UCS servers and Hitachi VSP storage, with connecting infrastructure involving Cisco MDS Multi-layer Switches for Fibre Channel traffic and Cisco Nexus Switches for Ethernet traffic. (MDS not a part of this solution)
 ## Solution Architecture
 
-![AdaptiveSolutions VSI Topology](https://github.com/rcisaac/AdaptiveSolutions_IMM_NVMe_TCP/blob/2cc8fee8cc5453e6d0e919c375ebabfd185d433c/AdaptiveSolutions%20VSI%20X-Direct%20One%20Block%20Topology.png?raw=true)
+<img width="864" height="423" alt="image" src="https://github.com/user-attachments/assets/53eab30d-254c-417d-923c-23a9b2960cde" />
 
 Information on the program is conveyed through white papers and Cisco Validated Designs (CVDs) that are developed as a cooperative effort between the two companies.  
 
